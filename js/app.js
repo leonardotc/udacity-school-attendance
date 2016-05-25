@@ -3,28 +3,28 @@
  * attendance record if one is not found
  * within localStorage.
  */
-(function() {
+var model = {
+  init: function() {
     if (!localStorage.attendance) {
-        console.log('Creating attendance records...');
-        function getRandom() {
-            return (Math.random() >= 0.5);
+      console.log('Creating attendance records...');
+  
+      var attendance = {"Slappy the Frog":[], 
+        "Lilly the Lizard":[], 
+        "Paulrus the Walrus":[], 
+        "Gregory the Goat":[], 
+        "Adam the Anaconda":[]};
+      var attendance = {};
+  
+      for (name in attendance) {
+        for (var i = 0; i <= 11; i++) {
+            attendance[name].push(Math.random() >= 0.5);
         }
-
-        var nameColumns = $('tbody .name-col'),
-            attendance = {};
-
-        nameColumns.each(function() {
-            var name = this.innerText;
-            attendance[name] = [];
-
-            for (var i = 0; i <= 11; i++) {
-                attendance[name].push(getRandom());
-            }
-        });
-
-        localStorage.attendance = JSON.stringify(attendance);
+      }
+  
+      localStorage.attendance = JSON.stringify(attendance);
     }
-}());
+  }
+};
 
 
 /* STUDENT APPLICATION */
