@@ -16,39 +16,87 @@ var model = {
       var attendance = {};
   
       for (name in attendance) {
+        var total = 0;
+        
         for (var i = 0; i <= 11; i++) {
-            attendance[name].push(Math.random() >= 0.5);
+          var checked = Math.random() >= 0.5;
+          attendance[name].push(checked);
+          
+          if (checked) {
+            total++;
+          }
+          
         }
+
+        attendance[name].push(total);
+        
       }
   
-      localStorage.attendance = JSON.stringify(attendance);
+      this.setAttendance(attendance);
     }
+  },
+  
+  getAttendance: function() {
+    return JSON.parse(localStorage.attendance);
+  },
+  
+  setAttendance: function(attendance) {
+    return JSON.parse(attendance);
+  },
+  
+  updateAttendance: function(name, position, st) {
+    var attendace = this.getAttendance();
+    
+    if (attendance[name] && attendance[name][position]) {
+      attendance[name][position] = st;
+    }
+    
+    this.setAttendance(attendace);
   }
+};
+
+var octopus = {
+  init: function() {
+    model.init();
+    view.init();
+  }
+};
+
+var view = {
+  
+  init: function() {
+    
+  },
+  
+  
 };
 
 
 /* STUDENT APPLICATION */
 $(function() {
-    var attendance = JSON.parse(localStorage.attendance),
-        $allMissed = $('tbody .missed-col'),
-        $allCheckboxes = $('tbody input');
+  
+  init: function() {
+    this.allMissed = $('tbody .missed-col'),
+    this.allCheckboxes = $('tbody input');
+  },
+  
+  render: function() {
+    var attendance = octopus.getAttendance();
+ 
+    this.allMissed.each(function() {
+        var studentRow = $(this).parent('tr'),
+            dayChecks = $(studentRow).children('td').children('input'),
+            numMissed = 0;
 
-    // Count a student's missed days
-    function countMissing() {
-        $allMissed.each(function() {
-            var studentRow = $(this).parent('tr'),
-                dayChecks = $(studentRow).children('td').children('input'),
-                numMissed = 0;
-
-            dayChecks.each(function() {
-                if (!$(this).prop('checked')) {
-                    numMissed++;
-                }
-            });
-
-            $(this).text(numMissed);
+        dayChecks.each(function() {
+            if (!$(this).prop('checked')) {
+                numMissed++;
+            }
         });
-    }
+
+        $(this).text(numMissed);
+    });
+  }
 
     // Check boxes, based on attendace records
     $.each(attendance, function(name, days) {
